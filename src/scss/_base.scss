@@ -32,10 +32,10 @@ input {
 
 .btn {
 
-    transition: .3s transform ease-in-out;
+    transition: .3s all ease-in-out;
 
     &:hover {
-        transform: scale(1.03);
+        transform: scale(1.05);
     }
 
 }

@@ -26,14 +26,14 @@
                         >
                         <label for="dava-app-password">Password</label>
                     </div>
+                    <button class="btn login__signup-btn">
+                        Sign Up
+                    </button>
                     <button
                             class="btn login__submit-btn"
                             @click="login"
                     >
                         Log In
-                    </button>
-                    <button class="btn login__signup-btn">
-                        Sign Up
                     </button>
                 </div>
 
@@ -79,7 +79,7 @@
                 loginFailMessage: null,
                 loginFailMessages: {
                     clientSide: 'Korisničko ime mora sadržavati najmanje 4 znaka, dok se lozinka mora sastojati od najmanje 8 znakove, uzimajući u obzir da najmanje 4 znaka moraju biti brojevi!',
-                    serverSide: 'Korisnik sa tim korisničkim imenom već postoji!'
+                    serverSide: 'Korisnik sa tim korisničkim imenom već postoji, ili ste unijeli krivu lozinku!'
                 },
                 username: '',
                 password: ''
@@ -142,11 +142,23 @@
         &__submit-btn {
             background-color: $black;
             color: $white-almost;
+            width: 49%;
+            float: right;
+
+            &:hover {
+                background-color: lighten($black, 15%);
+            }
         }
 
         &__signup-btn {
             background-color: transparentize($black, .5);
             color: $white-almost;
+            width: 49%;
+            float: left;
+
+            &:hover {
+                background-color: lighten(transparentize($black, .5), 15%);
+            }
         }
 
     }

@@ -46,17 +46,23 @@ const actions = {
             });
 
         const handleUsersResponse = response => {
+
             console.log(response);
 
             if (response.status === false) {
 
                 switch (response.desc) {
 
-                    case 'USER_ALREADY_EXISTS':
+                    case 'USER_ALREADY_EXISTS_OR_WRONG_PASSWORD':
                         EventBus.$emit('userAlreadyExists');
                         break;
 
                 }
+
+            }
+            else if (response.status === true) {
+
+                console.log('Logged in!');
 
             }
 
