@@ -1,0 +1,41 @@
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+@-webkit-keyframes autofill {
+    to {
+        color: $white-almost;
+        background: transparent;
+    }
+}
+
+input:-webkit-autofill {
+    -webkit-animation-name: autofill;
+    -webkit-animation-fill-mode: both;
+}
+
+input {
+    color: $white-almost !important;
+}
+
+label {
+    color: $white-almost !important;
+}
+
+input {
+    border-bottom: none;
+    outline: none;
+    border-bottom: none !important;
+    box-shadow: 0 1px 0 0 $white-almost !important;
+}
+
+.btn {
+
+    transition: .3s transform ease-in-out;
+
+    &:hover {
+        transform: scale(1.03);
+    }
+
+}
