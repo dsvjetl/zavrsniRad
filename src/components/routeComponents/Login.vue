@@ -1,70 +1,75 @@
 <template>
     <div class="login">
         <div class="row">
-            <transition name="fade" mode="out-in">
-
-                <div
-                        class="login__modal col s12 l4 offset-l4"
-                        v-if="currentModal === 'login'"
-                        key="login"
+            <div
+                    class="login__modal col s12 l4 offset-l4"
+            >
+                <transition
+                    name="fade" mode="out-in"
                 >
-                    <div class="input-field">
-                        <input
-                                id="dava-app-username"
-                                type="text"
-                                autocomplete="off"
-                                v-model="username"
-                        >
-                        <label for="dava-app-username">Username</label>
-                    </div>
-                    <div class="input-field">
-                        <input
-                                id="dava-app-password"
-                                type="password"
-                                autocomplete="off"
-                                v-model="password"
-                        >
-                        <label for="dava-app-password">Password</label>
-                    </div>
-                    <button class="btn login__signup-btn">
-                        Sign Up
-                    </button>
-                    <button
-                            class="btn login__submit-btn"
-                            @click="login"
+                    <div
+                            v-if="currentModal === 'login'"
                     >
-                        Log In
-                    </button>
-                </div>
+                        <div class="input-field">
+                            <input
+                                    id="dava-app-username"
+                                    type="text"
+                                    autocomplete="off"
+                                    v-model="username"
+                            >
+                            <label for="dava-app-username">Username</label>
+                        </div>
+                        <div class="input-field">
+                            <input
+                                    id="dava-app-password"
+                                    type="password"
+                                    autocomplete="off"
+                                    v-model="password"
+                            >
+                            <label for="dava-app-password">Password</label>
+                        </div>
+                    </div>
 
-                <div
-                        class="login__modal col s12 l4 offset-l4"
-                        v-if="currentModal === 'loginFailed'"
-                        key="login-fail"
+                    <div
+                            v-if="currentModal === 'loginFailed'"
+                    >
+                        <h3>
+                            Nuespješna prijava
+                        </h3>
+
+                        <p>
+                            {{ loginFailMessage }}
+                        </p>
+                    </div>
+
+                    <sign-up
+                        v-if="currentModal === 'signUp'"
+                    ></sign-up>
+
+                </transition>
+
+                <button
+                        class="btn login__submit-btn"
+                        @click="checkLogin"
                 >
-
-                    <h3>
-                        Login Failed!
-                    </h3>
-
-                    <p>
-                        {{ loginFailMessage }}
-                    </p>
-
-                    <button
-                            class="btn login__submit-btn"
-                            @click="currentModal = 'login'"
-                    >
-                        Shvatio sam!
-                    </button>
-                </div>
-
-            </transition>
+                    {{ loginBtnMsg }}
+                </button>
+                <button
+                        class="btn login__signup-btn"
+                        :class="{'sign-up': currentModal === 'signUp'}"
+                        @click="signUp"
+                >
+                    Sign Up
+                </button>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+    // Components
+    import SignUp from '@/components/SignUp';
+
     // Event Bus
     import {EventBus} from "../../main";
 
@@ -78,27 +83,57 @@
                 currentModal: 'login',
                 loginFailMessage: null,
                 loginFailMessages: {
-                    clientSide: 'Korisničko ime mora sadržavati najmanje 4 znaka, dok se lozinka mora sastojati od najmanje 8 znakove, uzimajući u obzir da najmanje 4 znaka moraju biti brojevi!',
+                    clientSide: 'Korisničko ime mora sadržavati najmanje 4 znaka, dok se lozinka mora sastojati od najmanje 8 znakova, uzimajući u obzir da najmanje 4 znaka moraju biti brojevi!',
                     serverSide: 'Korisnik sa tim korisničkim imenom već postoji, ili ste unijeli krivu lozinku!'
                 },
                 username: '',
                 password: ''
             }
         },
+        computed: {
+            loginBtnMsg() {
+
+                switch (this.currentModal) {
+                    case 'login':
+                        return 'Log in';
+                        break;
+                    case 'loginFailed':
+                        return 'Shvaćam';
+                        break;
+                    case 'signUp':
+                        return 'Back';
+                        break;
+                }
+
+            }
+        },
         methods: {
+            checkLogin() {
+                this.currentModal === 'login' ? this.login() : this.currentModal = 'login';
+            },
             login() {
 
                 if (this.passwordValidation() && this.userNameValidation()) {
-                    this.$store.dispatch('updateUsers', {
-                        users: {
-                            username: this.username,
-                            password: this.password
-                        }
+
+                    this.$store.dispatch('updateCurrentUser', {
+                        username: this.username,
+                        password: this.password
                     });
-                }
-                else {
+
+                } else {
+
                     this.loginFailMessage = this.loginFailMessages.clientSide;
                     this.currentModal = 'loginFailed';
+
+                }
+
+            },
+            signUp() {
+
+                if (this.currentModal === 'signUp') {
+
+                } else if (this.currentModal === 'login') {
+                    this.currentModal = 'signUp';
                 }
 
             },
@@ -113,11 +148,20 @@
             this.currentModal = 'login';
         },
         created() {
+
             EventBus.$on('userAlreadyExists', this.userAlreadyExists);
+
+            EventBus.$on('loggedIn', () => {
+                console.log('Logged In');
+            });
+
         },
         mixins: [
             inputValidation
-        ]
+        ],
+        components: {
+            SignUp
+        }
     }
 </script>
 
@@ -143,7 +187,7 @@
             background-color: $black;
             color: $white-almost;
             width: 49%;
-            float: right;
+            float: left;
 
             &:hover {
                 background-color: lighten($black, 15%);
@@ -154,10 +198,22 @@
             background-color: transparentize($black, .5);
             color: $white-almost;
             width: 49%;
-            float: left;
+            float: right;
 
             &:hover {
                 background-color: lighten(transparentize($black, .5), 15%);
+            }
+
+            &.sign-up {
+
+                background-color: $white-almost;
+                color: $black;
+                font-weight: bold;
+
+                &:hover {
+                    background-color: $black-light;
+                    color: $white-almost;
+                }
             }
         }
 

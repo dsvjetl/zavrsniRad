@@ -7,7 +7,7 @@ import {EventBus} from "../../main";
 
 const state = {
 
-    users: [],
+    currentUser: {},
     urls: {
         login: 'http://localhost/zavrsni/requests/login.php'
     }
@@ -16,8 +16,8 @@ const state = {
 
 const getters = {
 
-    users(state) {
-        return state.users;
+    currentUser(state) {
+        return state.currentUser;
     },
     urls(state) {
         return state.urls;
@@ -27,17 +27,22 @@ const getters = {
 
 const mutations = {
 
-    updateUsers(state, payload) {
-        state.users = payload.users;
+    updateCurrentUser(state, payload) {
+        state.currentUser = payload.currentUser;
     }
 
 };
 
 const actions = {
 
-    updateUsers(context, payload) {
+    updateCurrentUser(context, payload) {
 
-        Vue.http.post(context.state.urls.login, payload.users)
+        console.log(context.getters.urls.login);
+
+        Vue.http.post(context.getters.urls.login, {
+            username: payload.username,
+            password: payload.password
+        })
             .then(response => response.json())
             .then(response => {
                 handleUsersResponse(response);
@@ -51,23 +56,16 @@ const actions = {
 
             if (response.status === false) {
 
-                switch (response.desc) {
+                EventBus.$emit('userAlreadyExists');
 
-                    case 'USER_ALREADY_EXISTS_OR_WRONG_PASSWORD':
-                        EventBus.$emit('userAlreadyExists');
-                        break;
+            } else if (response.status === true) {
 
-                }
-
-            }
-            else if (response.status === true) {
-
-                console.log('Logged in!');
+                context.commit('updateCurrentUser', {
+                    currentUser: response.currentUser
+                });
 
             }
-
         }
-
     }
 
 };
