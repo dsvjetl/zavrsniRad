@@ -1,15 +1,19 @@
 <template>
     <div class="login">
         <div class="row">
-            <div
-                    class="login__modal col s12 l4 offset-l4"
-            >
-                <transition
+            <transition
                     name="fade" mode="out-in"
+            >
+                <div
+                        class="login__modal col s12 l4 offset-l4"
+                        v-if="currentModal === 'login'"
                 >
-                    <div
-                            v-if="currentModal === 'login'"
-                    >
+
+                    <h5 class="login__title">
+                        Log in
+                    </h5>
+
+                    <div>
                         <div class="input-field">
                             <input
                                     id="dava-app-username"
@@ -30,38 +34,35 @@
                         </div>
                     </div>
 
-                    <div
-                            v-if="currentModal === 'loginFailed'"
+                    <button
+                            class="btn login__submit-btn"
+                            @click="checkLogin"
                     >
-                        <h3>
-                            Nuespješna prijava
-                        </h3>
+                        {{ loginBtnMsg }}
+                    </button>
+                    <button
+                            class="btn login__signup-btn"
+                            :class="{'sign-up': currentModal === 'signUp'}"
+                            @click="signUp"
+                    >
+                        Sign Up
+                    </button>
 
-                        <p>
-                            {{ loginFailMessage }}
-                        </p>
-                    </div>
+                </div>
 
-                    <sign-up
+                <login-failed
+                        v-if="currentModal === 'loginFailed'"
+                        :loginFailMessage="loginFailMessage"
+                        @backToLogin="currentModal = 'login'"
+                ></login-failed>
+
+                <sign-up
                         v-if="currentModal === 'signUp'"
-                    ></sign-up>
+                        @backToLogIn="currentModal = 'login'"
+                        @signUpValidationFailed="signUpFail"
+                ></sign-up>
 
-                </transition>
-
-                <button
-                        class="btn login__submit-btn"
-                        @click="checkLogin"
-                >
-                    {{ loginBtnMsg }}
-                </button>
-                <button
-                        class="btn login__signup-btn"
-                        :class="{'sign-up': currentModal === 'signUp'}"
-                        @click="signUp"
-                >
-                    Sign Up
-                </button>
-            </div>
+            </transition>
         </div>
     </div>
 </template>
@@ -69,6 +70,7 @@
 <script>
     // Components
     import SignUp from '@/components/SignUp';
+    import LoginFailed from '@/components/LoginFailed';
 
     // Event Bus
     import {EventBus} from "../../main";
@@ -128,11 +130,17 @@
                 }
 
             },
+            signUpFail() {
+
+                this.loginFailMessage = this.loginFailMessages.clientSide;
+                this.currentModal = 'loginFailed';
+
+            },
             signUp() {
 
                 if (this.currentModal === 'signUp') {
 
-                } else if (this.currentModal === 'login') {
+                } else if (this.currentModal === 'login' || this.currentModal === 'loginFailed') {
                     this.currentModal = 'signUp';
                 }
 
@@ -151,16 +159,13 @@
 
             EventBus.$on('userAlreadyExists', this.userAlreadyExists);
 
-            EventBus.$on('loggedIn', () => {
-                console.log('Logged In');
-            });
-
         },
         mixins: [
             inputValidation
         ],
         components: {
-            SignUp
+            SignUp,
+            LoginFailed
         }
     }
 </script>
@@ -169,6 +174,10 @@
 <style lang="scss" scoped>
 
     .login {
+
+        &__title {
+            padding-bottom: 15px;
+        }
 
         &__modal {
 
@@ -184,6 +193,7 @@
         }
 
         &__submit-btn {
+
             background-color: $black;
             color: $white-almost;
             width: 49%;
@@ -195,6 +205,7 @@
         }
 
         &__signup-btn {
+
             background-color: transparentize($black, .5);
             color: $white-almost;
             width: 49%;
@@ -202,18 +213,6 @@
 
             &:hover {
                 background-color: lighten(transparentize($black, .5), 15%);
-            }
-
-            &.sign-up {
-
-                background-color: $white-almost;
-                color: $black;
-                font-weight: bold;
-
-                &:hover {
-                    background-color: $black-light;
-                    color: $white-almost;
-                }
             }
         }
 

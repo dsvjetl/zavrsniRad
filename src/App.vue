@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <app-header></app-header>
-        <router-view class="container" />
+        <router-view class="container"/>
     </div>
 </template>
 
@@ -9,10 +9,20 @@
     // Components
     import AppHeader from '@/components/AppHeader';
 
+    // EventBus
+    import {EventBus} from "./main";
+
     export default {
         name: 'app',
         components: {
             AppHeader
+        },
+        created() {
+
+            EventBus.$on('userActivated', () => {
+                this.$router.push({name: 'home'});
+            });
+
         }
     }
 </script>
@@ -27,7 +37,7 @@
         background-size: cover;
         background-repeat: no-repeat;
         height: 100vh;
-        background-position-x: center;
+        background-position: center;
     }
 
 </style>
