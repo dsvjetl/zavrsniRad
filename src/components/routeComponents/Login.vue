@@ -1,171 +1,66 @@
 <template>
     <div class="login">
         <div class="row">
-            <transition
-                    name="fade" mode="out-in"
-            >
-                <div
-                        class="login__modal col s12 l4 offset-l4"
-                        v-if="currentModal === 'login'"
+            <div class="login-google">
+                <button
+                        class="login__google-login-btn"
+                        @click="googleSignIn"
                 >
-
-                    <h5 class="login__title">
-                        Log in
-                    </h5>
-
-                    <div>
-                        <div class="input-field">
-                            <input
-                                    id="dava-app-username"
-                                    type="text"
-                                    autocomplete="off"
-                                    v-model="username"
-                            >
-                            <label for="dava-app-username">Username</label>
-                        </div>
-                        <div class="input-field">
-                            <input
-                                    id="dava-app-password"
-                                    type="password"
-                                    autocomplete="off"
-                                    v-model="password"
-                            >
-                            <label for="dava-app-password">Password</label>
-                        </div>
-                    </div>
-
-                    <button
-                            class="btn login__submit-btn"
-                            @click="checkLogin"
+                    <img
+                            src="../../assets/icons/google.png" alt="Google icon"
+                            class="login__google-icon"
                     >
-                        {{ loginBtnMsg }}
-                    </button>
-                    <button
-                            class="btn login__signup-btn"
-                            :class="{'sign-up': currentModal === 'signUp'}"
-                            @click="signUp"
-                    >
-                        Sign Up
-                    </button>
-
-                </div>
-
-                <login-failed
-                        v-if="currentModal === 'loginFailed'"
-                        :loginFailMessage="loginFailMessage"
-                        @backToLogin="currentModal = 'login'"
-                ></login-failed>
-
-                <sign-up
-                        v-if="currentModal === 'signUp'"
-                        @backToLogIn="currentModal = 'login'"
-                        @signUpValidationFailed="signUpFail"
-                ></sign-up>
-
-            </transition>
+                    <span>
+                        Sign in!
+                    </span>
+                </button>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-    // Components
-    import SignUp from '@/components/SignUp';
-    import LoginFailed from '@/components/LoginFailed';
-
-    // Event Bus
-    import {EventBus} from "../../main";
-
-    // Mixins
-    import {inputValidation} from "../../mixins/inputValidation";
-
     export default {
         name: 'login',
-        data() {
-            return {
-                currentModal: 'login',
-                loginFailMessage: null,
-                loginFailMessages: {
-                    clientSide: 'Korisničko ime mora sadržavati najmanje 4 znaka, dok se lozinka mora sastojati od najmanje 8 znakova, uzimajući u obzir da najmanje 4 znaka moraju biti brojevi!',
-                    serverSide: 'Korisnik sa tim korisničkim imenom već postoji, ili ste unijeli krivu lozinku!'
-                },
-                username: '',
-                password: ''
-            }
-        },
-        computed: {
-            loginBtnMsg() {
 
-                switch (this.currentModal) {
-                    case 'login':
-                        return 'Log in';
-                        break;
-                    case 'loginFailed':
-                        return 'Shvaćam';
-                        break;
-                    case 'signUp':
-                        return 'Back';
-                        break;
-                }
-
-            }
-        },
         methods: {
-            checkLogin() {
-                this.currentModal === 'login' ? this.login() : this.currentModal = 'login';
-            },
-            login() {
 
-                if (this.passwordValidation() && this.userNameValidation()) {
+            // Google login
+            googleSignIn(googleUser) {
+
+                this.$googleAuth().signIn(googleUser => {
+
+                    const firstName = googleUser.w3.ofa;
+                    const lastName = googleUser.w3.wea;
+                    const googleId = googleUser.w3.Eea;
+
+                    const currentUser = {
+                        firstName,
+                        lastName,
+                        googleId
+                    };
 
                     this.$store.dispatch('updateCurrentUser', {
-                        username: this.username,
-                        password: this.password
+                        googleUser: currentUser
                     });
 
-                } else {
-
-                    this.loginFailMessage = this.loginFailMessages.clientSide;
-                    this.currentModal = 'loginFailed';
-
-                }
+                }, error => {
+                    console.error(error);
+                });
 
             },
-            signUpFail() {
 
-                this.loginFailMessage = this.loginFailMessages.clientSide;
-                this.currentModal = 'loginFailed';
+            // Google logout
+            googleLogout() {
 
-            },
-            signUp() {
-
-                if (this.currentModal === 'signUp') {
-
-                } else if (this.currentModal === 'login' || this.currentModal === 'loginFailed') {
-                    this.currentModal = 'signUp';
-                }
-
-            },
-            userAlreadyExists() {
-
-                this.loginFailMessage = this.loginFailMessages.serverSide;
-                this.currentModal = 'loginFailed';
+                this.$googleAuth().signOut(function () {
+                    console.log('sout');
+                }, function (error) {
+                    console.error(error);
+                });
 
             }
-        },
-        mounted() {
-            this.currentModal = 'login';
-        },
-        created() {
 
-            EventBus.$on('userAlreadyExists', this.userAlreadyExists);
-
-        },
-        mixins: [
-            inputValidation
-        ],
-        components: {
-            SignUp,
-            LoginFailed
         }
     }
 </script>
@@ -175,45 +70,33 @@
 
     .login {
 
-        &__title {
-            padding-bottom: 15px;
-        }
+        &__google-login-btn {
 
-        &__modal {
-
-            margin-top: 10%;
             border-radius: 5px;
-            background-color: transparentize($black, .5);
-            color: $white-almost;
-            padding: 2%;
+            margin: 20% auto;
+            display: block;
+            padding: 10px 15px;
+            transition: all .3s ease-in-out;
+            background-color: $white-almost;
 
-            label {
-                color: transparentize($white-almost, .5) !important;
+            span {
+                float: right;
+                padding-left: 10px;
+                font-size: 20px;
+                line-height: 40px;
             }
+
+            &:hover {
+                transform: scale(1.1);
+                background-color: $black;
+                color: $white-almost;
+            }
+
         }
 
-        &__submit-btn {
-
-            background-color: $black;
-            color: $white-almost;
-            width: 49%;
+        &__google-icon {
+            width: 40px;
             float: left;
-
-            &:hover {
-                background-color: lighten($black, 15%);
-            }
-        }
-
-        &__signup-btn {
-
-            background-color: transparentize($black, .5);
-            color: $white-almost;
-            width: 49%;
-            float: right;
-
-            &:hover {
-                background-color: lighten(transparentize($black, .5), 15%);
-            }
         }
 
     }

@@ -9,8 +9,8 @@ const getters = {
     login(state) {
         return `${state.baseUrl}login.php`;
     },
-    signUp(state) {
-        return `${state.baseUrl}signUp.php`;
+    getAllSongs(state) {
+        return `${state.baseUrl}getAllSongs.php`;
     }
 
 };

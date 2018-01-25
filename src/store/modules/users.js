@@ -7,7 +7,12 @@ import {EventBus} from "../../main";
 
 const state = {
 
-    currentUser: {}
+    currentUser: {
+        firstName: '',
+        lastName: '',
+        id: null,
+        googleId: ''
+    }
 
 };
 
@@ -31,71 +36,30 @@ const actions = {
 
     updateCurrentUser(context, payload) {
 
-        console.log(context.rootGetters);
+        const googleUser = payload.googleUser;
+
+        localStorage.zavrsniRadUser = JSON.stringify(googleUser);
 
         Vue.http.post(context.rootGetters.login, {
-            username: payload.username,
-            password: payload.password
+            firstName: googleUser.firstName,
+            lastName: googleUser.lastName,
+            googleId: googleUser.googleId
         })
             .then(response => response.json())
             .then(response => {
-                handleUsersResponse(response);
+
+                console.log(response);
+
+                context.commit('updateCurrentUser', {
+                    currentUser: googleUser
+                });
+
+                EventBus.$emit('userUpdated');
+
             }, error => {
                 console.error(error);
             });
 
-        const handleUsersResponse = response => {
-
-            console.log(response);
-
-            if (response.status === false) {
-
-                EventBus.$emit('userAlreadyExists');
-
-            } else if (response.status === true) {
-
-                context.commit('updateCurrentUser', {
-                    currentUser: response.currentUser
-                });
-
-                EventBus.$emit('userActivated');
-
-            }
-        }
-    },
-    signUp(context, payload) {
-
-        console.log(context.rootGetters);
-
-        Vue.http.post(context.rootGetters.signUp, {
-            username: payload.username,
-            password: payload.password
-        })
-            .then(response => response.json())
-            .then(response => {
-                handleUsersResponse(response);
-            }, error => {
-                console.error(error);
-            });
-
-        const handleUsersResponse = response => {
-
-            console.log(response);
-
-            if (response.status === false) {
-
-                EventBus.$emit('userAlreadyExists');
-
-            } else if (response.status === true) {
-
-                context.commit('updateCurrentUser', {
-                    currentUser: response.currentUser
-                });
-
-                EventBus.$emit('userActivated');
-
-            }
-        }
     }
 
 };

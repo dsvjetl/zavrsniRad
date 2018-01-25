@@ -12,6 +12,9 @@
     // EventBus
     import {EventBus} from "./main";
 
+    // Mixins
+    import {localStorageLogin} from "./mixins/localStorageLogin";
+
     export default {
         name: 'app',
         components: {
@@ -19,11 +22,14 @@
         },
         created() {
 
-            EventBus.$on('userActivated', () => {
+            EventBus.$on('userUpdated', () => {
                 this.$router.push({name: 'home'});
             });
 
-        }
+        },
+        mixins: [
+            localStorageLogin
+        ]
     }
 </script>
 

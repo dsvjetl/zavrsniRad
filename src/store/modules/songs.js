@@ -5,13 +5,13 @@ Vue.use(VueResource);
 
 const state = {
 
-    songs: []
+    allSongs: []
 
 };
 
 const getters = {
 
-    songs(state) {
+    allSongs(state) {
         return state.songs;
     }
 
@@ -19,7 +19,7 @@ const getters = {
 
 const mutations = {
 
-    getSongs(state, payload) {
+    getAllSongs(state, payload) {
         state.songs = payload.songs;
     }
 
@@ -27,6 +27,27 @@ const mutations = {
 
 const actions = {
 
+    getAllSongs(context) {
 
+        Vue.http.get(context.rootGetters.getAllSongs)
+            .then(response => response.json())
+            .then(response => {
 
+                context.commit('getAllSongs', {
+                    songs: response.songs
+                });
+
+            }, error => {
+                console.error(error);
+            });
+
+    }
+
+};
+
+export const songs = {
+    state,
+    getters,
+    mutations,
+    actions
 };

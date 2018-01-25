@@ -34,6 +34,10 @@ input {
 
     transition: .3s all ease-in-out;
 
+    &.primary {
+        background-color: $brown-light;
+    }
+
     &:hover {
         transform: scale(1.05);
     }
