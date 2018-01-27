@@ -7,7 +7,7 @@
 
 <script>
     // Components
-    import AppHeader from '@/components/AppHeader';
+    import AppHeader from '@/components/app/AppHeader';
 
     // EventBus
     import {EventBus} from "./main";

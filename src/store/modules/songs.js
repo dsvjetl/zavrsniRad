@@ -12,7 +12,7 @@ const state = {
 const getters = {
 
     allSongs(state) {
-        return state.songs;
+        return state.allSongs;
     }
 
 };
@@ -20,7 +20,7 @@ const getters = {
 const mutations = {
 
     getAllSongs(state, payload) {
-        state.songs = payload.songs;
+        state.allSongs = payload.songs;
     }
 
 };
