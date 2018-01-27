@@ -12,9 +12,14 @@
         <div class="home__songs-container row">
             <song
                 v-for="song in allSongs"
-                :key="song.songId"
-                :songId="song.songId"
-                :songName="song.songName"
+                :key="song.id"
+                :songId="song.id"
+                :songName="song.name"
+                :songGenre="song.genre"
+                :songSize="song.size"
+                :songUrl="song.url"
+                :songDuration="song.duration"
+                @click.native="songClicked(song.id)"
             >
 
             </song>
@@ -42,6 +47,16 @@
             }
         },
 
+        methods: {
+
+            songClicked(songId) {
+
+                this.$router.push({name: 'songPlayer', params: {songId}});
+
+            }
+
+        },
+
         mounted() {
 
             const songAnimation = new gsapSongsAnimation('.js-song', '.js-title', '.js-choose');
@@ -51,6 +66,8 @@
             setTimeout(() => {
                 songAnimation.animateElements();
             }, 500);
+
+            console.log(this.$store.getters.allSongs);
 
         },
 

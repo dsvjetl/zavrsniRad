@@ -5,13 +5,13 @@
                 {{ songName }}
             </h5>
             <p class="song__description">
-                <span>Genre: </span>Rock
+                <span>Genre: </span>{{ songGenre }}
             </p>
             <p class="song__description">
-                <span>Duration: </span>03:46
+                <span>Duration: </span>{{ songDuration }}
             </p>
             <p class="song__description">
-                <span>Size: </span>8.3 MB
+                <span>Size: </span>{{ songSize | bToMB }} MB
             </p>
             <i class="tiny material-icons song__icon">queue_music</i>
         </div>
@@ -19,11 +19,18 @@
 </template>
 
 <script>
+    // Filters
+    import bToMB from '@/filters/bToMB';
+
     export default {
         name: 'song',
         props: {
             songName: String,
-            songId: String
+            songId: String,
+            songGenre: String,
+            songSize: String,
+            songUrl: String,
+            songDuration: String
         }
     }
 </script>
