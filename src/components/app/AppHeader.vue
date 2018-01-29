@@ -31,6 +31,7 @@
 <style lang="scss" scoped>
 
     .navigation {
+        height: 70px;
 
         &__app-header {
             background-color: $black;

@@ -22,9 +22,9 @@
         },
         created() {
 
-            EventBus.$on('userUpdated', () => {
-                this.$router.push({name: 'home'});
-            });
+            // EventBus.$on('userUpdated', () => {
+            //     this.$router.push({name: 'home'});
+            // });
 
         },
         mixins: [
