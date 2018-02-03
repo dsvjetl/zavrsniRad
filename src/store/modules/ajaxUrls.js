@@ -11,6 +11,12 @@ const getters = {
     },
     getAllSongs(state) {
         return `${state.baseUrl}getAllSongs.php`;
+    },
+    gradeSong(state) {
+        return `${state.baseUrl}gradeSong.php`;
+    },
+    getSongGrades(state) {
+        return `${state.baseUrl}getSongGrades.php`;
     }
 
 };

@@ -53,6 +53,10 @@
 
                 this.$router.push({name: 'songPlayer', params: {songId}});
 
+                this.$store.dispatch('getSongGrades', {
+                    songId
+                });
+
             }
 
         },

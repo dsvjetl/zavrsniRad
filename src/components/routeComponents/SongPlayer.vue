@@ -15,22 +15,24 @@
             >
 
                 <i
-                        class="material-icons song-player__star-icon"
+                        class="material-icons song-player__star-icon gsap-star"
                         v-for="count in 10"
                         :key="count"
                         ref="star"
                         @mouseover="starHover(count)"
                         @mouseleave="starBlur"
+                        @click="gradeSong(count)"
                 >
                     star_border
                 </i>
 
-                <span>9 / 10</span>
+                <span>{{ averageGrade }} / 10</span>
             </div>
 
             <h3
-                    class="col s12 song-player__song-name"
+                    class="col s12 song-player__song-name gsap-title"
                     v-if="songObject"
+                    ref="songTitle"
             >{{ songObject.name | songName}}</h3>
 
             <i
@@ -56,7 +58,7 @@
                     class="song-player__song-time col s12"
                     v-if="songObject"
             >
-                {{ `${currentTime} / ${songObject.duration }` }}
+                {{ `${currentTime} / ${songObject.duration}` }}
             </div>
 
         </div>
@@ -67,6 +69,9 @@
 </template>
 
 <script>
+    // Helpers
+    import {gsapSongAnimation} from "../../helpers/gsapSongAnimation";
+
     // Components
     import Comments from '@/components/songPlayer/Comments';
 
@@ -86,7 +91,8 @@
                 songIsPlaying: false,
                 songDuration: 0,
                 loaderWidth: 0,
-                currentTime: '00:00'
+                currentTime: '00:00',
+                songGraded: false
             }
         },
 
@@ -97,6 +103,12 @@
             },
             songId() {
                 return this.$route.params.songId;
+            },
+            currentUserGrade() {
+                return this.$store.getters.currentUserGrade;
+            },
+            averageGrade() {
+                return this.$store.getters.averageGrade;
             }
 
         },
@@ -159,9 +171,7 @@
 
             },
             rangeChangeCurrentTime($event) {
-
                 this.song.currentTime = ($event.srcElement.value / 100) * this.songDuration;
-
             },
             removeRangePopup() {
                 document.querySelector('.thumb').style.display = 'none';
@@ -193,12 +203,47 @@
             },
             starBlur() {
 
-                const stars = this.$refs.star;
+                if (this.songGraded === false) {
+                    const stars = this.$refs.star;
 
-                stars.forEach(star => {
-                    star.style.color = '#000';
+                    stars.forEach(star => {
+                        star.style.color = '#000';
+                    });
+                }
+                else {
+                    return;
+                }
+
+            },
+            gradeSong(count) {
+
+                this.$store.dispatch('gradeSong', {
+                    count,
+                    songId: this.songId
                 });
 
+                this.updateStars(count);
+
+            },
+            updateStars(count) {
+
+                const stars = this.$refs.star;
+
+                stars.forEach((star, index) => {
+
+                    if (index < count) {
+                        star.style.color = 'gold';
+                    }
+
+                    star.style.pointerEvents = 'none';
+
+                });
+
+                this.songGraded = true;
+
+            },
+            checkGradesOnStart() {
+                this.updateStars(Number(this.currentUserGrade));
             }
 
         },
@@ -208,6 +253,9 @@
             'songObject'(newVal) {
                 console.log(newVal);
                 this.initSong();
+            },
+            currentUserGrade(newVal) {
+                this.updateStars(Number(this.currentUserGrade));
             }
 
         },
@@ -216,10 +264,16 @@
 
             this.$store.dispatch('getAllSongs');
 
+            const gsapSongAnimationLocal = new gsapSongAnimation({
+                stars: '.gsap-star',
+                songTitle: '.gsap-title'
+            });
+
+            this.checkGradesOnStart();
+
         },
 
         created() {
-
 
 
         },
@@ -268,6 +322,7 @@
             font-size: 30px;
             color: $white-almost;
             padding-bottom: 10px;
+            opacity: 0; // GSAP
         }
 
         &__loader {
@@ -291,14 +346,14 @@
             margin: 0;
             height: 260px;
 
-            background: rgba(76,76,76,1);
-            background: -moz-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,0.86) 39%, rgba(71,71,71,0.79) 60%, rgba(19,19,19,0.65) 100%);
-            background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(76,76,76,1)), color-stop(39%, rgba(89,89,89,0.86)), color-stop(60%, rgba(71,71,71,0.79)), color-stop(100%, rgba(19,19,19,0.65)));
-            background: -webkit-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,0.86) 39%, rgba(71,71,71,0.79) 60%, rgba(19,19,19,0.65) 100%);
-            background: -o-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,0.86) 39%, rgba(71,71,71,0.79) 60%, rgba(19,19,19,0.65) 100%);
-            background: -ms-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(89,89,89,0.86) 39%, rgba(71,71,71,0.79) 60%, rgba(19,19,19,0.65) 100%);
-            background: linear-gradient(to bottom, rgba(76,76,76,1) 0%, rgba(89,89,89,0.86) 39%, rgba(71,71,71,0.79) 60%, rgba(19,19,19,0.65) 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313', GradientType=0 );
+            background: rgba(76, 76, 76, 1);
+            background: -moz-linear-gradient(top, rgba(76, 76, 76, 1) 0%, rgba(89, 89, 89, 0.86) 39%, rgba(71, 71, 71, 0.79) 60%, rgba(19, 19, 19, 0.65) 100%);
+            background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(76, 76, 76, 1)), color-stop(39%, rgba(89, 89, 89, 0.86)), color-stop(60%, rgba(71, 71, 71, 0.79)), color-stop(100%, rgba(19, 19, 19, 0.65)));
+            background: -webkit-linear-gradient(top, rgba(76, 76, 76, 1) 0%, rgba(89, 89, 89, 0.86) 39%, rgba(71, 71, 71, 0.79) 60%, rgba(19, 19, 19, 0.65) 100%);
+            background: -o-linear-gradient(top, rgba(76, 76, 76, 1) 0%, rgba(89, 89, 89, 0.86) 39%, rgba(71, 71, 71, 0.79) 60%, rgba(19, 19, 19, 0.65) 100%);
+            background: -ms-linear-gradient(top, rgba(76, 76, 76, 1) 0%, rgba(89, 89, 89, 0.86) 39%, rgba(71, 71, 71, 0.79) 60%, rgba(19, 19, 19, 0.65) 100%);
+            background: linear-gradient(to bottom, rgba(76, 76, 76, 1) 0%, rgba(89, 89, 89, 0.86) 39%, rgba(71, 71, 71, 0.79) 60%, rgba(19, 19, 19, 0.65) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4c4c4c', endColorstr='#131313', GradientType=0);
 
         }
 
@@ -327,6 +382,7 @@
         &__star-icon {
 
             transition: all .3s ease-in-out;
+            opacity: 0; // GSAP
 
             &:hover {
                 color: $white-almost;
@@ -336,7 +392,6 @@
         }
 
     }
-
 
     // Materialize hax
     input[type=range]::-webkit-slider-thumb {

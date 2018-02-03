@@ -43,7 +43,7 @@ const actions = {
         Vue.http.post(context.rootGetters.login, {
             firstName: googleUser.firstName,
             lastName: googleUser.lastName,
-            googleId: googleUser.googleId
+            googleId: googleUser.googleId,
         })
             .then(response => response.json())
             .then(response => {
@@ -51,7 +51,7 @@ const actions = {
                 console.log(response);
 
                 context.commit('updateCurrentUser', {
-                    currentUser: googleUser
+                    currentUser: response
                 });
 
                 EventBus.$emit('userUpdated');
