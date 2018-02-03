@@ -1,5 +1,5 @@
 <template>
-    <div class="home">
+    <div class="home container">
 
         <h3 class="home__title js-title">
             Welcome to my album!
