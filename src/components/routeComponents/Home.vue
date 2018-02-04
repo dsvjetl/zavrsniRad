@@ -57,6 +57,10 @@
                     songId
                 });
 
+                this.$store.dispatch('updateSongComments', {
+                    songId
+                });
+
             }
 
         },

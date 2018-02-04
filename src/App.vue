@@ -23,7 +23,13 @@
         created() {
 
             EventBus.$on('userUpdated', () => {
-                this.$router.push({name: 'home'});
+
+                console.log(this.$router.currentRoute.name);
+
+                if (this.$router.currentRoute.name === 'login') {
+                    this.$router.push({name: 'home'});
+                }
+
             });
 
         },

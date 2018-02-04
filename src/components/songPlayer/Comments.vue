@@ -1,36 +1,41 @@
 <template>
     <div class="comments row">
 
-        <div class="comments__all-comments col s8 offset-s2">
+        <div
+                class="comments__all-comments col s8 offset-s2"
+                ref="allComments"
+        >
 
             <div
                     class="comments__comment"
-                    v-for="count in 10"
+                    v-for="(songComment, index) in songComments"
             >
                 <h5
                     @mouseover="commentTitleHover($event)"
                     @mouseleave="commentTitleBlur"
                 >
-                    {{count}}. Domagoj Svjetličić
+                    {{ index + 1 }}. {{ `${songComment.userFirstName} ${songComment.userLastName}` }}
                 </h5>
                 <p
                         class="comment-content"
                         ref="commentContent"
                 >
-                    It is a long established fact that a reader will be distracted by the
-                    readable content of a page when looking at its layout. The point of usin
-                    g Lorem Ipsum is that it has a more-or-less normal distribution of letters,
-                    as opposed to using 'Content here
+                    {{ songComment.komentar }}
                 </p>
             </div>
 
             <div class="comments__my-comment">
                 <textarea
                     class="col s8 offset-s2"
-                    placeholder="Add your comment..."
+                    placeholder="Add your comment... [Press Enter to add]"
+                    v-model="comment"
+                    @keypress.enter="addYourComment"
                 ></textarea>
 
-                <button class="btn col s4 offset-s1 m2 offset-m3 comments__add-comment-btn">
+                <button
+                        class="btn col s4 offset-s1 m2 offset-m3 comments__add-comment-btn"
+                        @click="addYourComment"
+                >
                     Add comment
                 </button>
 
@@ -44,8 +49,29 @@
 </template>
 
 <script>
+    // Event bus
+    import {EventBus} from "../../main";
+
     export default {
         name: 'comments',
+
+        data() {
+            return {
+                comment: ''
+            }
+        },
+
+        props: {
+            songId: String
+        },
+
+        computed: {
+
+            songComments() {
+                return this.$store.getters.songComments;
+            }
+
+        },
 
         methods: {
 
@@ -63,7 +89,49 @@
                     commentContent.style.color = 'rgba(254, 255, 254, 0.5)';
                 });
 
+            },
+            addYourComment($event) {
+
+                $event.preventDefault();
+
+                const request = {
+                    songId: this.songId,
+                    comment: this.comment
+                };
+
+                if (this.comment.length > 0) {
+
+                    this.$store.dispatch('commentSong', request);
+                    this.comment = '';
+
+                }
+                else {
+                    console.warn('Comment is empty!');
+                }
+
+            },
+            scrollCommentsContainer() {
+
+                setTimeout(() => {
+                    const commentsContainer = this.$refs.allComments;
+                    commentsContainer.scrollTop = commentsContainer.scrollHeight;
+                }, 100);
+
             }
+
+        },
+
+        mounted() {
+
+
+
+        },
+
+        created() {
+
+            EventBus.$on('newCommentAdded', () => {
+                this.scrollCommentsContainer();
+            });
 
         }
     }

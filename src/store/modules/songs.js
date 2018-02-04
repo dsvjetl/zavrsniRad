@@ -1,13 +1,16 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 
+import {EventBus} from "../../main";
+
 Vue.use(VueResource);
 
 const state = {
 
     allSongs: [],
     currentUserGrade: 0,
-    averageGrade: 0
+    averageGrade: 0,
+    songComments: []
 
 };
 
@@ -21,6 +24,9 @@ const getters = {
     },
     averageGrade(state) {
         return state.averageGrade;
+    },
+    songComments(state) {
+        return state.songComments;
     }
 
 };
@@ -35,6 +41,9 @@ const mutations = {
     },
     updateAverageGrade(state, payload) {
         state.averageGrade = payload.averageGrade;
+    },
+    updateSongComments(state, payload) {
+        state.songComments = payload.songComments;
     }
 
 };
@@ -95,8 +104,6 @@ const actions = {
             .then(response => response.json())
             .then(response => {
 
-                console.log(response);
-
                 context.commit('updateCurrentUserGrade', {
                     currentUserGrade: response.currentUserGrade
                 });
@@ -104,6 +111,52 @@ const actions = {
                 context.commit('updateAverageGrade', {
                     averageGrade: response.averageGrade
                 });
+
+            }, error => {
+                console.error(error);
+            });
+
+    },
+
+    updateSongComments(context, payload) {
+
+        const songId = payload.songId;
+
+        Vue.http.get(`${context.rootGetters.getSongComments}?songId=${songId}`)
+            .then(response => response.json())
+            .then(response => {
+
+                context.commit('updateSongComments', {
+                    songComments: response.data
+                });
+
+            }, error => {
+                console.error(error);
+            });
+
+    },
+
+    commentSong(context, payload) {
+
+        const songId = payload.songId;
+        const comment = payload.comment;
+        const userId = context.rootGetters.currentUser.id;
+
+        const request = {
+            songId,
+            comment,
+            userId
+        };
+
+        Vue.http.post(context.rootGetters.commentSong, request)
+            .then(response => response.json())
+            .then(response => {
+
+                context.dispatch('updateSongComments', {
+                    songId
+                });
+
+                EventBus.$emit('newCommentAdded');
 
             }, error => {
                 console.error(error);

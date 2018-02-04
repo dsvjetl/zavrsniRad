@@ -63,7 +63,9 @@
 
         </div>
 
-        <comments></comments>
+        <comments
+            :songId="songId"
+        ></comments>
 
     </div>
 </template>
@@ -243,7 +245,11 @@
 
             },
             checkGradesOnStart() {
-                this.updateStars(Number(this.currentUserGrade));
+
+                if (this.currentUserGrade > 0) {
+                    this.updateStars(Number(this.currentUserGrade));
+                }
+
             }
 
         },
@@ -275,6 +281,13 @@
 
         created() {
 
+            this.$store.dispatch('updateSongComments', {
+                songId: this.songId
+            });
+
+            this.$store.dispatch('getSongGrades', {
+                songId: this.songId
+            });
 
         },
 
