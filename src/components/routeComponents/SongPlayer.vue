@@ -65,6 +65,7 @@
 
         <comments
             :songId="songId"
+            :songObject="songObject"
         ></comments>
 
     </div>
@@ -246,7 +247,7 @@
             },
             checkGradesOnStart() {
 
-                if (this.currentUserGrade > 0) {
+                if (this.currentUserGrade) {
                     this.updateStars(Number(this.currentUserGrade));
                 }
 
@@ -261,7 +262,10 @@
                 this.initSong();
             },
             currentUserGrade(newVal) {
-                this.updateStars(Number(this.currentUserGrade));
+                console.log('newVal', newVal);
+                if (newVal) {
+                    this.updateStars(Number(this.currentUserGrade));
+                }
             }
 
         },
@@ -281,11 +285,11 @@
 
         created() {
 
-            this.$store.dispatch('updateSongComments', {
+            this.$store.dispatch('getSongGrades', {
                 songId: this.songId
             });
 
-            this.$store.dispatch('getSongGrades', {
+            this.$store.dispatch('updateSongComments', {
                 songId: this.songId
             });
 

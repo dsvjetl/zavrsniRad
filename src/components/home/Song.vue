@@ -1,8 +1,8 @@
 <template>
-    <div class="song js-song col s3">
+    <div class="song js-song col m3 s12">
         <div class="song__song-container">
             <h5 class="song__name">
-                {{ songName }}
+                {{ songName | songName }}
             </h5>
             <p class="song__description">
                 <span>Genre: </span>{{ songGenre }}
@@ -21,6 +21,7 @@
 <script>
     // Filters
     import bToMB from '@/filters/bToMB';
+    import songName from '@/filters/songName'
 
     export default {
         name: 'song',
@@ -51,7 +52,7 @@
             border-radius: 5px;
             padding: 5px 0 10px;
             transition: all .3s ease-in-out;
-            height: 150px;
+            height: 140px;
             position: relative;
 
             &:hover {

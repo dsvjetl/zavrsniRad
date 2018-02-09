@@ -105,7 +105,7 @@
             // border: 1px solid $brown-light;
             background-color: transparentize($brown-dark, .7);
             border-radius: 5px;
-            height: 400px;
+            height: 360px;
             overflow: hidden;
             overflow-y: auto;
             padding: 3px;

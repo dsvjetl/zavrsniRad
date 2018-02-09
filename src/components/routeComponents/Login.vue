@@ -48,17 +48,6 @@
                     console.error(error);
                 });
 
-            },
-
-            // Google logout
-            googleLogout() {
-
-                this.$googleAuth().signOut(function () {
-                    console.log('sout');
-                }, function (error) {
-                    console.error(error);
-                });
-
             }
 
         }

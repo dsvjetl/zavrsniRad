@@ -3,20 +3,35 @@
         <div class="nav-wrapper navigation__app-header">
             <div class="container">
 
-                <a>
+                <a
+                        v-if="currentLogoString != logoStrings.back"
+                >
+                    {{ currentLogoString }}
+                </a>
+
+                <a
+                        class="navigation__back-btn"
+                        v-else
+                        @click="goBackToSongs"
+                >
                     {{ currentLogoString }}
                 </a>
 
                 <ul
                         class="right"
-                        v-if="currentRouteName != 'login'"
+                        v-if="firstName"
                 >
-                    <li><a>Sass</a></li>
-                    <li><a>Components</a></li>
+                    <li>
+                        <a
+                            @click="googleLogout"
+                        >
+                            Log Out
+                        </a>
+                    </li>
                     <li
                             class="navigation__user-name"
-                            v-if="firstName"
-                    >{{ firstName }}
+                    >
+                        {{ firstName }}
                     </li>
                 </ul>
             </div>
@@ -52,16 +67,13 @@
 
         methods: {
 
+            goBackToSongs() {
+                this.$router.push({name: 'home'});
+            },
 
+            watchRoutes(routeName) {
 
-        },
-
-        watch: {
-            '$route'(to, from) {
-
-                console.log(to);
-
-                switch(to.name) {
+                switch (routeName) {
                     case 'login':
                         this.currentLogoString = this.logoStrings.login;
                         break;
@@ -73,7 +85,33 @@
                         break;
                 }
 
+            },
+
+            // Google logout
+            googleLogout() {
+
+                this.$googleAuth().signOut(() => {
+
+                    console.log('Signed out');
+                    this.$store.dispatch('signOut');
+                    this.$router.push({name: 'login'});
+
+                }, error => {
+                    console.error(error);
+                });
+
             }
+
+        },
+
+        watch: {
+            '$route'(to, from) {
+                this.watchRoutes(to.name);
+            }
+        },
+
+        mounted() {
+            this.watchRoutes(this.currentRouteName);
         }
     }
 </script>
@@ -90,6 +128,11 @@
         &__user-name {
             font-size: 18px;
             color: darken(#fff, 20%);
+        }
+
+        &__back-btn {
+            cursor: pointer;
+            transition: all .3s ease-in-out;
         }
 
         .container {

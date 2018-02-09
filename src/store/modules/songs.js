@@ -93,6 +93,10 @@ const actions = {
         const songId = payload.songId;
         const userId = context.rootGetters.currentUser.id;
 
+        if (!userId) {
+            return;
+        }
+
         const request = {
             songId,
             userId

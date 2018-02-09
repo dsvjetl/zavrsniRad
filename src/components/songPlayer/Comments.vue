@@ -2,7 +2,7 @@
     <div class="comments row">
 
         <div
-                class="comments__all-comments col s8 offset-s2"
+                class="comments__all-comments col m8 offset-m2 s12"
                 ref="allComments"
         >
 
@@ -26,7 +26,7 @@
 
             <div class="comments__my-comment">
                 <textarea
-                    class="col s8 offset-s2"
+                    class="col m8 offset-m2 s12"
                     placeholder="Add your comment... [Press Enter to add]"
                     v-model="comment"
                     @keypress.enter="addYourComment"
@@ -39,7 +39,10 @@
                     Add comment
                 </button>
 
-                <button class="btn col s4 offset-s2 m2 offset-m2 comments__download-btn">
+                <button
+                        class="btn col s4 offset-s2 m2 offset-m2 comments__download-btn"
+                        @click="downloadSong"
+                >
                     Download song
                 </button>
             </div>
@@ -62,7 +65,8 @@
         },
 
         props: {
-            songId: String
+            songId: String,
+            songObject: Object
         },
 
         computed: {
@@ -116,6 +120,15 @@
                     const commentsContainer = this.$refs.allComments;
                     commentsContainer.scrollTop = commentsContainer.scrollHeight;
                 }, 100);
+
+            },
+            downloadSong() {
+
+                let aEl = document.createElement('a');
+                aEl.setAttribute('href', this.songObject.url);
+                aEl.setAttribute('download', this.songObject.name);
+
+                aEl.click();
 
             }
 
@@ -203,6 +216,15 @@
 
             button {
                 margin-top: 10px;
+
+                @media screen and (max-width: 1000px) {
+                    font-size: .8rem;
+                }
+
+                @media screen and (max-width: 820px) {
+                    font-size: .7rem;
+                }
+
             }
         }
 

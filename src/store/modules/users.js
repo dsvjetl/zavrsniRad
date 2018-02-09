@@ -28,6 +28,9 @@ const mutations = {
 
     updateCurrentUser(state, payload) {
         state.currentUser = payload.currentUser;
+    },
+    signOut(state) {
+        state.currentUser = {};
     }
 
 };
@@ -60,6 +63,11 @@ const actions = {
                 console.error(error);
             });
 
+    },
+
+    signOut(context) {
+        context.commit('signOut');
+        localStorage.removeItem('zavrsniRadUser');
     }
 
 };

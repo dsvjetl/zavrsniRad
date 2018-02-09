@@ -1,6 +1,7 @@
 const state = {
 
-    baseUrl: 'http://localhost/zavrsni/requests/'
+    baseUrl: 'http://localhost/zavrsni/requests/', // for dev!
+    // baseUrl: 'http://domagoj-svjetlicic.000webhostapp.com/back/requests/'
 
 };
 
