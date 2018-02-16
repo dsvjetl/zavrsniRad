@@ -43,15 +43,15 @@ const actions = {
 
         localStorage.zavrsniRadUser = JSON.stringify(googleUser);
 
-        Vue.http.post(context.rootGetters.login, {
+        const request = {
             firstName: googleUser.firstName,
             lastName: googleUser.lastName,
-            googleId: googleUser.googleId,
-        })
+            googleId: googleUser.googleId
+        };
+
+        Vue.http.post(context.rootGetters.login, request)
             .then(response => response.json())
             .then(response => {
-
-                console.log(response);
 
                 context.commit('updateCurrentUser', {
                     currentUser: response

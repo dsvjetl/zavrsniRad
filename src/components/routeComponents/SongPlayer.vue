@@ -125,7 +125,6 @@
 
                 this.song.addEventListener('loadedmetadata', () => {
                     this.songDuration = this.song.duration;
-                    console.log('songDuration: ', this.songDuration);
                 });
 
             },
@@ -258,11 +257,9 @@
         watch: {
 
             'songObject'(newVal) {
-                console.log(newVal);
                 this.initSong();
             },
             currentUserGrade(newVal) {
-                console.log('newVal', newVal);
                 if (newVal) {
                     this.updateStars(Number(this.currentUserGrade));
                 }

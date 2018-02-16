@@ -31,7 +31,6 @@ export const gsapSongAnimation = class {
     // Initialization
 
     init() {
-        console.log(this.stars);
 
         this.setElementsToStartPositions();
 
@@ -59,8 +58,6 @@ export const gsapSongAnimation = class {
     }
 
     animateSongTitle() {
-
-        console.log(this.songTitle);
 
         TweenMax.fromTo(this.songTitle, 3, {
             opacity: 0,

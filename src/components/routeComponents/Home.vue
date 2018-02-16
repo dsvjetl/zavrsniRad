@@ -75,8 +75,6 @@
                 songAnimation.animateElements();
             }, 500);
 
-            console.log(this.$store.getters.allSongs);
-
         },
 
         created() {

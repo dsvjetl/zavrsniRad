@@ -102,8 +102,6 @@ const actions = {
             userId
         };
 
-        console.log(request);
-
         Vue.http.get(`${context.rootGetters.getSongGrades}?userId=${userId}&songId=${songId}`)
             .then(response => response.json())
             .then(response => {
