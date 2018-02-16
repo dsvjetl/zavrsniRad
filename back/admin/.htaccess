@@ -1,0 +1,8 @@
+
+# DO NOT REMOVE THIS LINE AND THE LINES BELOW PWPROTECTID:suMequVuja
+AuthType Basic
+AuthName "Restricted Access"
+AuthUserFile /home/u266158628/public_html/back/admin/.htpasswd
+Require valid-user
+# DO NOT REMOVE THIS LINE AND THE LINES ABOVE suMequVuja:PWPROTECTID
+
