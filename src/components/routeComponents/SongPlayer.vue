@@ -72,6 +72,9 @@
 </template>
 
 <script>
+    // EventBus
+    import {EventBus} from "../../main";
+
     // Helpers
     import {gsapSongAnimation} from "../../helpers/gsapSongAnimation";
 
@@ -229,25 +232,23 @@
             },
             updateStars(count) {
 
-                const stars = this.$refs.star;
+                if (count === false || count === 0) {
+                    return;
+                }
+                else {
+                    const stars = this.$refs.star;
 
-                stars.forEach((star, index) => {
+                    stars.forEach((star, index) => {
 
-                    if (index < count) {
-                        star.style.color = 'gold';
-                    }
+                        if (index < Number(count)) {
+                            star.style.color = 'gold';
+                        }
 
-                    star.style.pointerEvents = 'none';
+                        star.style.pointerEvents = 'none';
 
-                });
+                    });
 
-                this.songGraded = true;
-
-            },
-            checkGradesOnStart() {
-
-                if (this.currentUserGrade) {
-                    this.updateStars(Number(this.currentUserGrade));
+                    this.songGraded = true;
                 }
 
             }
@@ -258,11 +259,6 @@
 
             'songObject'(newVal) {
                 this.initSong();
-            },
-            currentUserGrade(newVal) {
-                if (newVal) {
-                    this.updateStars(Number(this.currentUserGrade));
-                }
             }
 
         },
@@ -276,8 +272,6 @@
                 songTitle: '.gsap-title'
             });
 
-            this.checkGradesOnStart();
-
         },
 
         created() {
@@ -288,6 +282,15 @@
 
             this.$store.dispatch('updateSongComments', {
                 songId: this.songId
+            });
+
+            EventBus.$on('updateStarsOnStart', grade => {
+                if (grade === false || grade === 0) {
+                    return;
+                }
+                else {
+                    this.updateStars(grade);
+                }
             });
 
         },

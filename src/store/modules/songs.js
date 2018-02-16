@@ -114,6 +114,8 @@ const actions = {
                     averageGrade: response.averageGrade
                 });
 
+                EventBus.$emit('updateStarsOnStart', response.currentUserGrade);
+
             }, error => {
                 console.error(error);
             });
