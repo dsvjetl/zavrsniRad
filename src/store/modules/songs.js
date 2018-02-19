@@ -82,6 +82,9 @@ const actions = {
             .then(response => response.json())
             .then(response => {
                 console.log(response);
+                context.dispatch('getSongGrades', {
+                    songId
+                });
             }, error => {
                 console.error(error);
             });

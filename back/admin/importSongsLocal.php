@@ -9,7 +9,7 @@ require '../helpers/_mp3File.php';
 
 <?php
 
-$dbPath = 'https://domagoj-svjetlicic.xyz/back/songs/';
+$dbPath = 'http://localhost/zavrsni/songs/';
 
 if (isset($_POST['submit'])) {
 

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: domagojsvjetlicic
+ * Date: 20/01/2018
+ * Time: 15:02
+ */
 
 require '../helpers/_headers.php';
 require '../helpers/_database.php';
@@ -92,7 +98,6 @@ function insertNewUser($firstName, $lastName, $googleId)
 {
 
     global $conn;
-    global $userId;
 
     $sql = "INSERT INTO korisnici (firstName, lastName, googleId)
             VALUES ('$firstName', '$lastName', '$googleId')";
@@ -101,14 +106,7 @@ function insertNewUser($firstName, $lastName, $googleId)
 
     if ($result) {
 
-        ej([
-            'desc' => 'NEW_USER_INSERTED',
-            'status' => true,
-            'firstName' => $firstName,
-            'lastName' => $lastName,
-            'googleId' => $googleId,
-            'id' => $userId
-        ]);
+        getUserIdAndRespond($googleId);
 
     } else {
 
@@ -119,6 +117,40 @@ function insertNewUser($firstName, $lastName, $googleId)
 
     }
 
+}
+
+function getUserIdAndRespond($googleId)
+{
+
+    global $conn;
+
+    $sql = "SELECT id, googleId, firstName, lastName
+            FROM korisnici
+            WHERE googleId = '$googleId' LIMIT 1";
+
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+
+            ej([
+                'desc' => 'NEW_USER_INSERTED',
+                'status' => true,
+                'firstName' => $row['firstName'],
+                'lastName' => $row['lastName'],
+                'googleId' => $row['googleId'],
+                'id' => $row['id']
+            ]);        
+
+        }
+    } else {
+
+        ej([
+            'desc' => 'USER_NOT_INSERTED',
+            'status' => false
+        ]);
+
+    }
 }
 
 $conn->close();
