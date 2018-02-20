@@ -10,7 +10,7 @@ $songId = $_GET['songId'];
 $data = [];
 
 if (isset($userId) && isset($songId)) {
-    findCurrentUserGrade($userId);
+    findCurrentUserGrade($userId, $songId);
     getGrades($songId);
 
     ej($data);
@@ -46,14 +46,14 @@ function getGrades($songId)
 
 }
 
-function findCurrentUserGrade($userId)
+function findCurrentUserGrade($userId, $songId)
 {
 
     global $conn;
     global $data;
 
     $sql = "SELECT g.grade grade FROM grades g
-            WHERE g.korisnikId = '$userId' LIMIT 1";
+            WHERE g.korisnikId = '$userId' AND g.songId = '$songId' LIMIT 1";
 
     $result = $conn->query($sql);
 

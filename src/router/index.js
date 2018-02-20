@@ -5,6 +5,7 @@ import Router from 'vue-router';
 import Login from '@/components/routeComponents/Login';
 import Home from '@/components/routeComponents/Home';
 import SongPlayer from '@/components/routeComponents/SongPlayer';
+import Info from '@/components/routeComponents/Info';
 
 Vue.use(Router);
 
@@ -24,6 +25,11 @@ export default new Router({
             path: '/song/:songId',
             name: 'songPlayer',
             component: SongPlayer
+        },
+        {
+            path: '/info',
+            name: 'info',
+            component: Info
         }
     ]
 });

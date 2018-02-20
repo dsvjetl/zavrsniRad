@@ -23,6 +23,13 @@
                 >
                     <li>
                         <a
+                                @click="goToInfo"
+                        >
+                            Info
+                        </a>
+                    </li>
+                    <li>
+                        <a
                             @click="googleLogout"
                         >
                             Log Out
@@ -67,6 +74,10 @@
 
         methods: {
 
+            goToInfo() {
+                this.$router.push({name: 'info'});
+            },
+
             goBackToSongs() {
                 this.$router.push({name: 'home'});
             },
@@ -81,6 +92,9 @@
                         this.currentLogoString = this.logoStrings.welcome;
                         break;
                     case 'songPlayer':
+                        this.currentLogoString = this.logoStrings.back;
+                        break;
+                    case 'info':
                         this.currentLogoString = this.logoStrings.back;
                         break;
                 }

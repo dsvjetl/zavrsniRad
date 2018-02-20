@@ -81,7 +81,6 @@ const actions = {
         Vue.http.post(context.rootGetters.gradeSong, gradeSongRequest)
             .then(response => response.json())
             .then(response => {
-                console.log(response);
                 context.dispatch('getSongGrades', {
                     songId
                 });

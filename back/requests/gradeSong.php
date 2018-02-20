@@ -12,7 +12,7 @@ $grade = $_POST['grade'];
 if (isset($userId) && isset($songId) && isset($grade)) {
 
 
-    if (userAlreadyGraded($userId) === false) {
+    if (userAlreadyGraded($userId, $songId) === false) {
         setNewGrade($userId, $songId, $grade);
     } else {
 
@@ -28,20 +28,20 @@ if (isset($userId) && isset($songId) && isset($grade)) {
 
     ej([
         'desc' => 'PARAMETERS_NOT_RECEIVED',
-        'status' => true
+        'status' => false
     ]);
 
 }
 
 
 // Functions
-function userAlreadyGraded($userId)
+function userAlreadyGraded($userId, $songId)
 {
 
     global $conn;
 
     $sql = "SELECT korisnikId FROM grades
-            WHERE korisnikId = '$userId'";
+            WHERE korisnikId = '$userId' AND songId = '$songId'";
 
     $result = $conn->query($sql);
 
@@ -78,23 +78,6 @@ function setNewGrade($userId, $songId, $grade)
             'status' => false
         ]);
 
-    }
-
-}
-
-function updateGradeForCurrentUser($userId) {
-
-    global $conn;
-
-    $sql = "SELECT grade FROM grades
-            WHERE korisnikId = '$userId' LIMIT 1";
-
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        while ($result->fetch_assoc()) {
-
-        }
     }
 
 }

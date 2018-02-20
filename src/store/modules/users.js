@@ -53,8 +53,6 @@ const actions = {
             .then(response => response.json())
             .then(response => {
 
-                console.log(response);
-
                 context.commit('updateCurrentUser', {
                     currentUser: response
                 });
